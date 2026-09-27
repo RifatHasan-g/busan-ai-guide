@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Busan AI Guide by Hasan Rifat (2026512896)</title>
+  <meta name="description" content="A cloud service on Render that combines live Busan weather, air and sea data with a Google Gemini AI guide. Built by Hasan Rifat, 2026512896." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-left">
+
+        <h1 class="wordmark"><span lang="ko">부산</span> AI Guide</h1>
+        <p class="lede">Ask anything about Busan, get a day plan that fits today's weather, and learn the Korean you need — powered by Google Gemini and live Busan data.</p>
+
+        <div class="id-card" aria-label="Student information">
+          <div class="id-card-top">
+            <span class="id-chip" aria-hidden="true"></span>
+            <span class="id-uni">Kyungsung University</span>
+          </div>
+          <p class="id-name">Hasan Rifat</p>
+          <p class="id-number">Student ID <strong>2026512896</strong></p>
+          <p class="id-dept">Department of Global IT Engineering</p>
+        </div>
+      </div>
+
+      <section class="now" aria-live="polite" aria-labelledby="now-title">
+        <h2 id="now-title" class="now-title">Busan right now</h2>
+        <p class="now-sentence" id="nowSentence">Loading live conditions…</p>
+        <dl class="now-stats" id="nowStats"></dl>
+        <ol class="forecast" id="forecast" aria-label="5-day forecast"></ol>
+        <p class="now-source">Live data from Open-Meteo weather, air quality and marine APIs, refreshed every 10 minutes.</p>
+      </section>
+    </div>
+
+    <svg class="bridge" viewBox="0 0 1200 140" preserveAspectRatio="none" aria-hidden="true">
+      <path class="cable" d="M0 118 L260 118 Q400 40 540 30 Q600 26 660 30 Q800 40 940 118 L1200 118" />
+      <path class="cable thin" d="M260 118 Q380 58 540 44 M660 44 Q820 58 940 118" />
+      <line x1="540" y1="12" x2="540" y2="126" class="tower" />
+      <line x1="660" y1="12" x2="660" y2="126" class="tower" />
+      <line x1="0" y1="118" x2="1200" y2="118" class="deck" />
+      <g class="hangers">
+        <line x1="300" y1="100" x2="300" y2="118"/><line x1="340" y1="84" x2="340" y2="118"/>
+        <line x1="380" y1="68" x2="380" y2="118"/><line x1="420" y1="56" x2="420" y2="118"/>
+        <line x1="460" y1="46" x2="460" y2="118"/><line x1="500" y1="38" x2="500" y2="118"/>
+        <line x1="580" y1="30" x2="580" y2="118"/><line x1="620" y1="30" x2="620" y2="118"/>
+        <line x1="700" y1="38" x2="700" y2="118"/><line x1="740" y1="46" x2="740" y2="118"/>
+        <line x1="780" y1="56" x2="780" y2="118"/><line x1="820" y1="68" x2="820" y2="118"/>
+        <line x1="860" y1="84" x2="860" y2="118"/><line x1="900" y1="100" x2="900" y2="118"/>
+      </g>
+      <path class="water" d="M0 130 Q50 124 100 130 T200 130 T300 130 T400 130 T500 130 T600 130 T700 130 T800 130 T900 130 T1000 130 T1100 130 T1200 130" />
+    </svg>
+  </header>
+
+  <main class="main">
+    <nav class="tabs" role="tablist" aria-label="AI tools">
+      <button role="tab" id="tab-chat" aria-controls="panel-chat" aria-selected="true">Ask the guide</button>
+      <button role="tab" id="tab-plan" aria-controls="panel-plan" aria-selected="false" tabindex="-1">Plan my day</button>
+      <button role="tab" id="tab-ko" aria-controls="panel-ko" aria-selected="false" tabindex="-1">Korean phrases</button>
+    </nav>
+
+    <!-- CHAT -->
+    <section id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" class="panel">
+      <div class="chat-log" id="chatLog" aria-live="polite">
+        <div class="msg bot">
+          <div class="bubble">
+            <p>안녕하세요! I'm your Busan guide. I know today's weather, air and sea conditions, so ask me where to go, what to eat, or how to get somewhere.</p>
+          </div>
+        </div>
+      </div>
+      <div class="suggestions" id="suggestions">
+        <button type="button">Is today good for Haeundae beach?</button>
+        <button type="button">Best cheap dwaeji gukbap near Seomyeon?</button>
+        <button type="button">How do I get from Kyungsung Univ. to Gamcheon Village?</button>
+        <button type="button">Rainy-day ideas in Busan</button>
+      </div>
+      <div class="composer">
+        <label for="chatInput" class="sr-only">Your question</label>
+        <textarea id="chatInput" rows="2" placeholder="Ask about places, food, transport, culture…" maxlength="1000"></textarea>
+        <button id="chatSend" class="btn-primary" type="button">Send</button>
+      </div>
+    </section>
+
+    <!-- PLANNER -->
+    <section id="panel-plan" role="tabpanel" aria-labelledby="tab-plan" class="panel" hidden>
+      <div class="plan-grid">
+        <div class="plan-form">
+          <label>Starting area
+            <select id="planArea">
+              <option>Anywhere in Busan</option>
+              <option>Haeundae</option>
+              <option>Gwangalli</option>
+              <option>Seomyeon</option>
+              <option>Nampo-dong / Jagalchi</option>
+              <option>Gamcheon Culture Village</option>
+              <option>Yeongdo / Taejongdae</option>
+              <option>Gijang / Haedong Yonggungsa</option>
+              <option>Kyungsung Univ. / Daeyeon</option>
+            </select>
+          </label>
+          <label>Day
+            <select id="planDay">
+              <option value="today">Today</option>
+              <option value="tomorrow">Tomorrow</option>
+            </select>
+          </label>
+          <label>Budget
+            <select id="planBudget">
+              <option>Student budget (under ₩30,000)</option>
+              <option selected>Medium (₩30,000–80,000)</option>
+              <option>Comfortable (₩80,000+)</option>
+            </select>
+          </label>
+          <label>People
+            <select id="planPeople">
+              <option>1</option><option selected>2</option><option>3–4</option><option>5+</option>
+            </select>
+          </label>
+          <fieldset class="interests">
+            <legend>Interests</legend>
+            <label><input type="checkbox" value="Beaches & sea" checked> Beaches & sea</label>
+            <label><input type="checkbox" value="Seafood & street food" checked> Seafood & street food</label>
+            <label><input type="checkbox" value="Temples & history"> Temples & history</label>
+            <label><input type="checkbox" value="Cafés & photo spots"> Cafés & photo spots</label>
+            <label><input type="checkbox" value="Shopping & markets"> Shopping & markets</label>
+            <label><input type="checkbox" value="Hiking & nature"> Hiking & nature</label>
+            <label><input type="checkbox" value="Nightlife & night views"> Night views</label>
+          </fieldset>
+          <button id="planBtn" class="btn-primary" type="button">Make my plan</button>
+        </div>
+        <article class="plan-out" id="planOut" aria-live="polite">
+          <p class="empty">Pick your area and interests, then make a plan. It will change with the live weather — rainy days get indoor spots.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- KOREAN -->
+    <section id="panel-ko" role="tabpanel" aria-labelledby="tab-ko" class="panel" hidden>
+      <div class="ko-wrap">
+        <label for="koInput" class="ko-label">Write what you want to say, in English or Bangla</label>
+        <div class="composer">
+          <textarea id="koInput" rows="2" maxlength="300" placeholder="e.g. One more bottle of water, please / আমি ছাত্র"></textarea>
+          <button id="koBtn" class="btn-primary" type="button">Translate</button>
+        </div>
+        <div class="ko-chips" id="koChips">
+          <button type="button">How much is this?</button>
+          <button type="button">Please take me to Kyungsung University</button>
+          <button type="button">Is this spicy?</button>
+          <button type="button">Where is the subway station?</button>
+        </div>
+        <div class="ko-result" id="koResult" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p><strong>Hasan Rifat</strong>, student ID 2026512896, Global IT Engineering, Kyungsung University</p>
+    <p>Runs on Render with Node.js and Express. AI by Google Gemini, Busan data by Open-Meteo. <span id="aiStatus">Checking AI…</span></p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

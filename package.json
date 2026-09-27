@@ -1,0 +1,19 @@
+{
+  "name": "busan-ai-guide",
+  "version": "1.0.0",
+  "description": "Busan AI Guide - Render cloud service with live Busan data + Google Gemini AI (Assignment 1, Hasan Rifat, 2026512896)",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "author": "Hasan Rifat (2026512896)",
+  "license": "MIT"
+}
